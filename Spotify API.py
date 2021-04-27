@@ -30,7 +30,7 @@ def get_tracks(pl_id):
             split_title = title.split(' (feat.', 1)
             title = split_title[0]
         artist = track['track']['album']['artists'][0]['name']
-        tracks_list.append((title, artist))
+        tracks_list.append((title.lower(), artist.lower()))
         
     return tracks_list
 
