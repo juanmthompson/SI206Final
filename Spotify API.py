@@ -16,31 +16,12 @@ import sys
 from pprint import pprint
 
 
-
-
-def get_playlist(playlist):
-
-    if len(sys.argv) > 1:
-        search_str = sys.argv[1]
-    else:
-        search_str = playlist
-
-    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
-    result = sp.search(search_str)
-    pprint(result['tracks'])
-    #pprint(type(result))
-    
-
-
-
-
 #Pull artist names and track titles from playlist
 #Billboard Hot 100 playlist - 6UeSakyzhiEt4NB3UAd6NQ
 def get_tracks(pl_id):
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
     offset = 0
-
     response = sp.playlist_tracks(pl_id, fields= None, limit=None, offset = offset, market=None)
 
     tracks_list = []
@@ -50,8 +31,6 @@ def get_tracks(pl_id):
         artist = track['track']['album']['artists'][0]['name']
         tracks_list.append((title, artist))
         
-
-    
     return tracks_list
 
 
@@ -70,17 +49,28 @@ def addData(conn, cur, track_data):
     #create tracks table
 
     command1 = """ CREATE TABLE IF NOT EXISTS
-    tracks(title TEXT, artist TEXT)"""
+    tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
     cur.execute(command1)
 
     #add to tracks
 
     for i in range(len(track_data)):
-        cur.execute("INSERT INTO tracks VALUES (?, ?)", (track_data[i][0], track_data[i][1])) #+ str(tracks_list[i][0]) + ' ' + str(tracks_list[i][1]))
+        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), track_data[i][0], track_data[i][1])) 
 
     conn.commit()
 
+    #join spotify table with billboards table
 
+    cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data.rank = track_data')
+
+
+def joinData():
+    cur, conn = setUpDatabase('tracks.db') 
+    cur.execute('DROP TABLE IF EXISTS billboard_top_100.db')
+    cur.execute('CREATE TABLE IF NOT EXISTS billboard_top_100.db (id ')
+    cur.execute('SELECT * FROM MovieID JOIN track_data ON ')
+    
+ 
 
 def main():
     cur, conn = setUpDatabase('tracks.db') 
