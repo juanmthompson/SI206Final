@@ -26,6 +26,9 @@ def get_tracks(pl_id):
     for track in response['items']:
             
         title = track['track']['name']
+        if ' (feat.' in title:
+            split_title = title.split(' (feat.', 1)
+            title = split_title[0]
         artist = track['track']['album']['artists'][0]['name']
         tracks_list.append((title, artist))
         
