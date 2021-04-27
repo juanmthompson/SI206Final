@@ -13,7 +13,6 @@ from pprint import pprint
 os.environ['SPOTIPY_CLIENT_ID']='7e8aa42287834331ab4df141ea09cf4b'
 os.environ['SPOTIPY_CLIENT_SECRET']='2352429b6bd54ddab121fbb87ac98ac8'
 
-
 #Pull artist names and track titles from playlist
 #Billboard Hot 100 playlist - 6UeSakyzhiEt4NB3UAd6NQ
 def get_tracks(pl_id):
@@ -34,7 +33,6 @@ def get_tracks(pl_id):
         
     return tracks_list
 
-
 #initialize database, define conn and cur
 def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
@@ -42,36 +40,26 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
     return cur, conn
 
-
-
-def addData(conn, cur, tracks_list): #
-
-
+def addData(conn, cur, tracks_list): 
     #create tracks table
-
     command1 = """ CREATE TABLE IF NOT EXISTS
     tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
     cur.execute(command1)
 
     #add to tracks
-
     for i in range(25): #ASK LUCY
         cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1])) 
-
     conn.commit()
 
-    #join spotify table with billboards table
-
-    
-    
+#join spotify table with billboards table
 def joinData(conn, cur):
     cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data = ranking_list.rank') #ASK LUCY ABOUT ERROR
 
 def main():
     cur, conn = setUpDatabase('tracks.db') 
     track_data = get_tracks('6UeSakyzhiEt4NB3UAd6NQ')
-    pprint(track_data)
-    pprint(len(track_data))
+    #pprint(track_data)
+    #pprint(len(track_data))
     addData(conn, cur, track_data)
     joinData(conn, cur)
 
