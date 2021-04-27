@@ -28,8 +28,12 @@ def get_song_artists():
     soup = BeautifulSoup(resp.text, 'html.parser')
     names = soup.find_all('span', class_ = 'chart-element__information__artist text--truncate color--secondary')
     for name in names:
-        artist_list.append(name.text.strip())
-    #print(artist_list)
+        artist_name = name.text.strip()
+        if 'Featuring' or 'X' or '&' in artist_name:
+            split_name = artist_name.split('Featuring', 1)
+            artist_name = split_name[0]
+        artist_list.append(artist_name)
+    print(artist_list)
     return artist_list
 
 def get_song_rank():
@@ -92,7 +96,7 @@ def add1Data(conn, cur, ranking_list):
 
     #add to tracks
 
-    for i in range(len(ranking_list)):
+    for i in range(25): #ASK LUCY
         cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", (ranking_list[i][0], ranking_list[i][1], ranking_list[i][2]))
     conn.commit()
     #results = cur.fetchall()
@@ -111,8 +115,8 @@ def add1Data(conn, cur, ranking_list):
 
     #add to tracks2
 
-    for i in range(len(weeks_list)):
-        cur.execute("INSERT INTO tracks2 VALUES (?, ?, ?)", (weeks_list[i][1], weeks_list[i][2], weeks_list[i][0]))
+    for i in range(25): #ASK LUCY
+        cur.execute("INSERT INTO tracks2 VALUES (?, ?, ?)", (weeks_list[i][0], weeks_list[i][1], weeks_list[i][2]))
     conn.commit()
 
 
