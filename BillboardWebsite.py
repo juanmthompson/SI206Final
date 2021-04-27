@@ -50,7 +50,7 @@ def create_tuples():
     artist_list =  get_song_artists()
     #rank_list = get_song_rank()
     tuple_list = list(zip(song_list, artist_list))
-    #pprint(tuple_list)
+    pprint(tuple_list)
     return tuple_list
 
 #set up the database
@@ -90,5 +90,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
