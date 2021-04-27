@@ -50,27 +50,29 @@ def get_surviving_tracks(conn1, conn2):
     return (surviving_tracks, survival_percentage)
 
 def get_track_rank_shifts(conn1, conn2):
-    track_rank_shifts = []
-
+    track_rank_shifts = {}
+    #get spotify titles and ranks (top 25 this week)
     cur1 = conn1.cursor()
     spotify_tracks = cur1.execute('SELECT title FROM tracks').fetchall()
     spotify_ranks = cur1.execute('SELECT rank FROM tracks').fetchall()
-
+    spotify_tracks_ranks = {}
+    for i in range(25):
+        spotify_tracks_ranks[(str(spotify_tracks[i][0]))] = str(spotify_ranks[i][0])
+        
+    #get billboard titles and ranks (top 25 three weeks ago)
     cur2 = conn2.cursor()
     bb_tracks= cur2.execute('SELECT title FROM tracks').fetchall()
     bb_ranks= cur2.execute('SELECT rank FROM tracks').fetchall()
+    bb_tracks_ranks = {}
+    for i in range(25):
+        bb_tracks_ranks[(str(bb_tracks[i][0]))] = str(bb_ranks[i][0])
+        
+    #combine dicts to form a new dict with titles and rank differences(shifts)
+    for key in spotify_tracks_ranks:
+        if key in bb_tracks_ranks:
 
-    for i in range(len(spotify_tracks)):
-        if spotify_tracks[i] in bb_tracks:
-            print(spotify_tracks[i][0])
-            print(spotify_ranks[i][0])
-            print('------------------')
-            print(bb_tracks[i][0])
-            print(bb_ranks[i][0])
-            print('------------------')
-            #shift = int(spotify_ranks[i][0]) - int(bb_ranks[i][0])
-            #track_rank_shifts.append((spotify_tracks[i][0], shift))
-    
+            track_rank_shifts[key] = (int(bb_tracks_ranks[key]) - int(spotify_tracks_ranks[key]))
+
     pprint(track_rank_shifts)
     return(track_rank_shifts)
 
@@ -102,4 +104,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
