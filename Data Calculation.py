@@ -76,6 +76,56 @@ def get_track_rank_shifts(conn1, conn2):
     pprint(track_rank_shifts)
     return(track_rank_shifts)
 
+def get_mult_appearances_artists(conn1, conn2):
+
+
+    #create empty dict of artists and their songs (in top 25 this week and 3 weeks ago)
+    artists_tracks = {}
+
+    #add artists and their songs to dict (from spotify)
+    cur1 = conn1.cursor()
+    spotify_tracks = cur1.execute('SELECT title FROM tracks').fetchall()
+    spotify_artists = cur1.execute('SELECT artist FROM tracks').fetchall()
+
+    for i in range(25):
+        artist = str(spotify_artists[i][0])
+        title = str(spotify_tracks[i][0])
+
+        if artist in artists_tracks.keys():
+            artists_tracks[artist].append(title)
+
+        else:
+            artists_tracks[artist] = [title]
+    
+        
+    #add artists and their songs to dict (from bb)
+    cur2 = conn2.cursor()
+    bb_tracks= cur2.execute('SELECT title FROM tracks').fetchall()
+    bb_artists= cur2.execute('SELECT artist FROM tracks').fetchall()
+    
+    for i in range(25):
+        artist = str(bb_artists[i][0])
+        title = str(bb_tracks[i][0])
+
+        if artist in artists_tracks.keys():
+            if title not in artists_tracks[artist]:
+                artists_tracks[artist].append(title)
+        else:
+            artists_tracks[artist] = [title] 
+
+    #create empty dict for artists and num of appearances on charts
+    artist_appearances = {}
+    for artist in artists_tracks:
+        if len(artists_tracks[artist]) > 1:
+            artist_appearances[artist] = len(artists_tracks[artist])
+    
+    pprint(artist_appearances)
+    return(artist_appearances)
+
+        
+
+
+
 
         
 
@@ -92,15 +142,19 @@ def get_track_rank_shifts(conn1, conn2):
 def main():
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db")
-    get_surviving_artists(conn1, conn2)
+    #get_surviving_artists(conn1, conn2)
     pprint('-----------------------------------------------------')
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db")
-    get_surviving_tracks(conn1, conn2)
+    #get_surviving_tracks(conn1, conn2)
     pprint('-----------------------------------------------------')
     conn1 = set_connection("tracks.db")
-    conn2 = set_connection("billboard_weeks_on_chart.db") #billboard_rankings.db
-    get_track_rank_shifts(conn1, conn2)
+    conn2 = set_connection("billboard_weeks_on_chart.db") 
+    #get_track_rank_shifts(conn1, conn2)
+    pprint('-----------------------------------------------------')
+    conn1 = set_connection("tracks.db")
+    conn2 = set_connection("billboard_weeks_on_chart.db")
+    get_mult_appearances_artists(conn1, conn2)
 
 if __name__ == '__main__':
     main()
