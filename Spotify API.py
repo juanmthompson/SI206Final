@@ -43,7 +43,7 @@ def setUpDatabase(db_name):
 
 
 
-def addData(conn, cur, track_data):
+def addData(conn, cur, tracks_list): #
 
 
     #create tracks table
@@ -54,23 +54,17 @@ def addData(conn, cur, track_data):
 
     #add to tracks
 
-    for i in range(len(track_data)):
-        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), track_data[i][0], track_data[i][1])) 
+    for i in range(len(tracks_list)): #
+        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1])) #
 
     conn.commit()
 
     #join spotify table with billboards table
 
-    cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data.rank = track_data')
-
-
-def joinData():
-    cur, conn = setUpDatabase('tracks.db') 
-    cur.execute('DROP TABLE IF EXISTS billboard_top_100.db')
-    cur.execute('CREATE TABLE IF NOT EXISTS billboard_top_100.db (id ')
-    cur.execute('SELECT * FROM MovieID JOIN track_data ON ')
     
- 
+    
+def joinData(conn, cur):
+    cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data.rank = ranking_list.rank')
 
 def main():
     cur, conn = setUpDatabase('tracks.db') 
@@ -78,6 +72,7 @@ def main():
     pprint(track_data)
     pprint(len(track_data))
     addData(conn, cur, track_data)
+    joinData(conn, cur)
 
 if __name__ == '__main__':
     main()
