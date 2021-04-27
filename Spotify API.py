@@ -10,8 +10,6 @@ import numpy as np
 os.environ['SPOTIPY_CLIENT_ID']='7e8aa42287834331ab4df141ea09cf4b'
 os.environ['SPOTIPY_CLIENT_SECRET']='2352429b6bd54ddab121fbb87ac98ac8'
 
-GRAMMYs_pl_id = 'spotify:playlist:37i9dQZF1DX5FyxM4IcLn6'
-
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import sys
@@ -37,10 +35,10 @@ def get_playlist(playlist):
 
 
 #Pull artist names and track titles from playlist
+#Billboard Hot 100 playlist - 6UeSakyzhiEt4NB3UAd6NQ
 def get_tracks(pl_id):
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
-    #pl_id = 'spotify:playlist:37i9dQZF1DX5FyxM4IcLn6'
     offset = 0
 
     response = sp.playlist_tracks(pl_id, fields= None, limit=None, offset = offset, market=None)
@@ -86,7 +84,7 @@ def addData(conn, cur, track_data):
 
 def main():
     cur, conn = setUpDatabase('tracks.db') 
-    track_data = get_tracks('37i9dQZF1DX5FyxM4IcLn6')
+    track_data = get_tracks('6UeSakyzhiEt4NB3UAd6NQ')
     pprint(track_data)
     pprint(len(track_data))
     addData(conn, cur, track_data)
