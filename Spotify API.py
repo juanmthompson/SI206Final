@@ -3,17 +3,15 @@ import sqlite3
 import csv
 import os
 import requests
-
 import matplotlib.pyplot as plt
 import numpy as np
-
-os.environ['SPOTIPY_CLIENT_ID']='7e8aa42287834331ab4df141ea09cf4b'
-os.environ['SPOTIPY_CLIENT_SECRET']='2352429b6bd54ddab121fbb87ac98ac8'
-
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 import sys
 from pprint import pprint
+
+os.environ['SPOTIPY_CLIENT_ID']='7e8aa42287834331ab4df141ea09cf4b'
+os.environ['SPOTIPY_CLIENT_SECRET']='2352429b6bd54ddab121fbb87ac98ac8'
 
 
 #Pull artist names and track titles from playlist
@@ -54,8 +52,8 @@ def addData(conn, cur, tracks_list): #
 
     #add to tracks
 
-    for i in range(len(tracks_list)): #
-        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1])) #
+    for i in range(25): #ASK LUCY
+        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1])) 
 
     conn.commit()
 
@@ -64,7 +62,7 @@ def addData(conn, cur, tracks_list): #
     
     
 def joinData(conn, cur):
-    cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data.rank = ranking_list.rank')
+    cur.execute('SELECT * FROM track_data JOIN tuple_list ON track_data = ranking_list.rank') #ASK LUCY ABOUT ERROR
 
 def main():
     cur, conn = setUpDatabase('tracks.db') 
