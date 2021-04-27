@@ -29,8 +29,8 @@ def get_song_artists():
     names = soup.find_all('span', class_ = 'chart-element__information__artist text--truncate color--secondary')
     for name in names:
         artist_name = name.text.strip()
-        if 'Featuring' in artist_name:
-            split_name = artist_name.split('Featuring', 1)
+        if ' Featuring' in artist_name:
+            split_name = artist_name.split(' Featuring', 1)
             artist_name = split_name[0]
         artist_list.append(artist_name.lower())
     #print(artist_list)
