@@ -15,7 +15,7 @@ def get_song_names():
     soup = BeautifulSoup(resp.text, 'html.parser')
     songs = soup.find_all('span', class_ = 'chart-element__information__song text--truncate color--primary')
     for song in songs:
-        song_list.append(song.text.strip())
+        song_list.append((song.text.strip()).lower())
     #print(song_list)
     return song_list
 
@@ -29,11 +29,11 @@ def get_song_artists():
     names = soup.find_all('span', class_ = 'chart-element__information__artist text--truncate color--secondary')
     for name in names:
         artist_name = name.text.strip()
-        if 'Featuring' or 'X' or '&' in artist_name:
+        if 'Featuring' in artist_name:
             split_name = artist_name.split('Featuring', 1)
             artist_name = split_name[0]
-        artist_list.append(artist_name)
-    print(artist_list)
+        artist_list.append(artist_name.lower())
+    #print(artist_list)
     return artist_list
 
 def get_song_rank():
@@ -144,5 +144,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
