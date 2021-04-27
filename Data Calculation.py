@@ -17,6 +17,7 @@ def set_connection(db_file):
         print("Couldn't connect to Database")
     return conn
 
+#get artists that have survived on bb hot 100 for past 3 weeks
 def get_surviving_artists(conn1, conn2):
     surviving_artists = []
     cur1 = conn1.cursor()
@@ -33,6 +34,11 @@ def get_surviving_artists(conn1, conn2):
     pprint(str(survival_percentage) + " percent of the artists on Billboard Hot 100 today have been on Billboard Hot 100 for the past three weeks")
     return (surviving_artists, survival_percentage)
 
+def surviving_artists_data(data):
+    f = open("surviving_artists.txt", "w" , encoding = "utf-8")
+    f.write(json.dumps(data))
+
+#get tracks that have survived on bb hot 100 for past 3 weeks
 def get_surviving_tracks(conn1, conn2):
     surviving_tracks = []
     cur1 = conn1.cursor()
@@ -48,6 +54,10 @@ def get_surviving_tracks(conn1, conn2):
     pprint(surviving_tracks)
     pprint(str(survival_percentage) + " percent of the tracks on Billboard Hot 100 today have been on Billboard Hot 100 for the past three weeks")
     return (surviving_tracks, survival_percentage)
+
+def surviving_tracks_data(data):
+    f = open("surviving_tracks.txt", "w" , encoding = "utf-8")
+    f.write(json.dumps(data))
 
 def get_track_rank_shifts(conn1, conn2):
     track_rank_shifts = {}
@@ -76,8 +86,11 @@ def get_track_rank_shifts(conn1, conn2):
     pprint(track_rank_shifts)
     return(track_rank_shifts)
 
-def get_mult_appearances_artists(conn1, conn2):
+def track_rank_shifts_data(data):
+    f = open("track_rank_shifts.txt", "w" , encoding = "utf-8")
+    f.write(json.dumps(data))
 
+def get_mult_appearances_artists(conn1, conn2):
 
     #create empty dict of artists and their songs (in top 25 this week and 3 weeks ago)
     artists_tracks = {}
@@ -122,39 +135,30 @@ def get_mult_appearances_artists(conn1, conn2):
     pprint(artist_appearances)
     return(artist_appearances)
 
+def mult_appearances_artists_data(data):
+    f = open("mult_appearances_artists.txt", "w" , encoding = "utf-8")
+    f.write(json.dumps(data))
         
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
 def main():
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db")
-    #get_surviving_artists(conn1, conn2)
+    get_surviving_artists(conn1, conn2)
+    surviving_artists_data(get_surviving_artists(conn1, conn2))
     pprint('-----------------------------------------------------')
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db")
-    #get_surviving_tracks(conn1, conn2)
+    get_surviving_tracks(conn1, conn2)
+    surviving_tracks_data(get_surviving_tracks(conn1, conn2))
     pprint('-----------------------------------------------------')
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db") 
-    #get_track_rank_shifts(conn1, conn2)
+    get_track_rank_shifts(conn1, conn2)
+    track_rank_shifts_data(get_track_rank_shifts(conn1, conn2))
     pprint('-----------------------------------------------------')
     conn1 = set_connection("tracks.db")
     conn2 = set_connection("billboard_weeks_on_chart.db")
     get_mult_appearances_artists(conn1, conn2)
+    mult_appearances_artists_data(get_mult_appearances_artists(conn1, conn2))
 
 if __name__ == '__main__':
     main()
