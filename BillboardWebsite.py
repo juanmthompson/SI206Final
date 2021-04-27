@@ -9,7 +9,7 @@ from pprint import pprint
 
 #get top song names
 def get_song_names():
-    charts_url = 'http://billboard.com/charts/hot-100'
+    charts_url = 'https://www.billboard.com/charts/hot-100/2021-04-10'
     resp = requests.get(charts_url)
     song_list = []
     soup = BeautifulSoup(resp.text, 'html.parser')
@@ -22,7 +22,7 @@ def get_song_names():
 #get artists of top songs 
 def get_song_artists():
     base_url = 'http://billboard.com'
-    charts_url = 'http://billboard.com/charts/hot-100'
+    charts_url = 'https://www.billboard.com/charts/hot-100/2021-04-10'
     resp = requests.get(charts_url)
     artist_list = []
     soup = BeautifulSoup(resp.text, 'html.parser')
