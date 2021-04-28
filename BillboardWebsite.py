@@ -79,53 +79,69 @@ def second_table():
     return tuple_list
 
 #set up the first database table
-def setUp1Database(db_name):
+def setUp1Database(table1name, table2name):
     path = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect(path+'/'+db_name)
+    conn = sqlite3.connect(path+'/'+table1name+table2name)
     cur = conn.cursor()
     return cur, conn
 
 #add to the first database table
-def add1Data(conn, cur, ranking_list):
+def add1Data(conn, cur, ranking_list, weeks_list, startIndex):
     #create tracks table
 
 
-    command1 = """ CREATE TABLE IF NOT EXISTS
-    tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
-    cur.execute(command1)
+    #command1 = """ CREATE TABLE IF NOT EXISTS
+    #tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
+    #cur.execute(command1)
 
     #add to tracks
 
-    for i in range(25): #ASK LUCY
-        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", (ranking_list[i][0], ranking_list[i][1], ranking_list[i][2]))
-    conn.commit()
+    #for i in range(25): #ASK LUCY
+        #cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", (ranking_list[i][0], ranking_list[i][1], ranking_list[i][2]))
+    #conn.commit()
     #results = cur.fetchall()
     #print(results)
     #return results
+    #create tracks table
+    
+    #b took code out here
+    #add to tracks
 
+    #command1 = """ CREATE TABLE IF NOT EXISTS
+    #tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
 
-    weeks_list = second_table()
+    for i in range(startIndex, startIndex + 25):
+        cur.execute("INSERT INTO tracks (rank, title, artist) VALUES (?, ?, ?)", (ranking_list[i][0], ranking_list[i][1], ranking_list[i][2]))
+    conn.commit()
+
+    #command2 = """ CREATE TABLE IF NOT EXISTS
+    #tracks2(title TEXT, artist TEXT, weeks TEXT)"""
+
+    for i in range(startIndex, startIndex + 25):
+        cur.execute("INSERT INTO tracks2 (title, artist, weeks) VALUES (?, ?, ?)", (weeks_list[i][0], weeks_list[i][1], weeks_list[i][2]))
+    conn.commit()
 
     #create tracks2 table
 
 
-    command2 = """ CREATE TABLE IF NOT EXISTS
-    tracks2(title TEXT, artist TEXT, weeks TEXT)"""
-    cur.execute(command2)
+    #command2 = """ CREATE TABLE IF NOT EXISTS
+    #tracks2(title TEXT, artist TEXT, weeks TEXT)"""
+    #cur.execute(command2)
 
     #add to tracks2
 
-    for i in range(25): #ASK LUCY
-        cur.execute("INSERT INTO tracks2 VALUES (?, ?, ?)", (weeks_list[i][0], weeks_list[i][1], weeks_list[i][2]))
-    conn.commit()
+    #for i in range(25): #ASK LUCY
+        #cur.execute("INSERT INTO tracks2 VALUES (?, ?, ?)", (weeks_list[i][0], weeks_list[i][1], weeks_list[i][2]))
+    #conn.commit()
+
 
 
 #set up the second database table
-def setUp2Database(db_name):
-    path = os.path.dirname(os.path.abspath(__file__))
-    conn = sqlite3.connect(path+'/'+db_name)
-    cur = conn.cursor()
-    return cur, conn
+#def setUp2Database(db_name):
+    #path = os.path.dirname(os.path.abspath(__file__))
+    #conn = sqlite3.connect(path+'/'+db_name)
+    #cur = conn.cursor()
+    #return cur, conn
 
 
 
@@ -135,11 +151,24 @@ def main():
     get_song_artists()
     get_song_rank()
     get_weeks_on_chart()
-    cur, conn = setUp1Database('billboard_rankings.db') 
-    cur, conn = setUp2Database('billboard_weeks_on_chart.db')
-    ranking_list = first_table()
+    command1 = """ CREATE TABLE IF NOT EXISTS
+    tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
+    command2 = """ CREATE TABLE IF NOT EXISTS
+    tracks2(title TEXT, artist TEXT, weeks TEXT)"""
 
-    add1Data(conn, cur, ranking_list)
+
+    cur, conn = setUp1Database('billboard_rankings.db', 'billboard_weeks_on_chart.db') 
+    ranking_list = first_table()
+    weeks_list = second_table()
+
+    cur.execute(command1)
+    cur.execute(command2)
+    cur.execute('SELECT max (rank) from tracks')
+    startIndex = cur.fetchone()[0]
+    if startIndex == None:
+        startIndex = 0
+
+    add1Data(conn, cur, ranking_list, weeks_list, startIndex)
 
 
 if __name__ == '__main__':
