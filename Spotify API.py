@@ -41,7 +41,6 @@ def setUpDatabase(db_name):
     return cur, conn
 
 def addData(conn, cur, tracks_list, startIndex): 
-    #create tracks table
     
     #b took code out here
     #add to tracks
