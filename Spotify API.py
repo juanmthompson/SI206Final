@@ -40,16 +40,16 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
     return cur, conn
 
-def addData(conn, cur, tracks_list): 
+def addData(conn, cur, tracks_list, startIndex): 
     #create tracks table
-    command1 = """ CREATE TABLE IF NOT EXISTS
-    tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
-    cur.execute(command1)
-
+    
+    #b took code out here
     #add to tracks
-    for i in range(25): #ASK LUCY
-        cur.execute("INSERT INTO tracks VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1])) 
+    for i in range(startIndex, startIndex + 25):
+        cur.execute("INSERT INTO tracks (rank, title, artist) VALUES (?, ?, ?)", ((i + 1), tracks_list[i][0], tracks_list[i][1]))
     conn.commit()
+
+
 
 #join spotify table with billboards table
 def joinData(conn, cur):
@@ -60,7 +60,16 @@ def main():
     track_data = get_tracks('6UeSakyzhiEt4NB3UAd6NQ')
     #pprint(track_data)
     #pprint(len(track_data))
-    addData(conn, cur, track_data)
+
+    command1 = """ CREATE TABLE IF NOT EXISTS
+    tracks(rank INTEGER PRIMARY KEY, title TEXT, artist TEXT)"""
+    cur.execute(command1)
+    cur.execute('SELECT max (rank) from tracks')
+    startIndex = cur.fetchone()[0]
+    if startIndex == None:
+        startIndex = 0
+
+    addData(conn, cur, track_data, startIndex)
     joinData(conn, cur)
 
 if __name__ == '__main__':
